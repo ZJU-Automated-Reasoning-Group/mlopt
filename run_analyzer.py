@@ -4,11 +4,12 @@ This is a script for testing (showing the use of our APIs to run a set of bitcod
 """
 import logging
 
-from opt4spa.config import m_tool
-from opt4spa.utils import run_cmd, is_bc_or_ll_file
+from ga.config import m_tool
+from ga.utils import run_cmd, is_bc_or_ll_file
 
 g_analyzer_timeout = 43200  # 12 hours
 
+# Put your bitcode elsewhere
 middle_bc_files = [
     "~/data/BC/Open/imagemagick.bc",
     "~/data/BC/Open/swoole.bc",
