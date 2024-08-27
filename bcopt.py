@@ -1,7 +1,8 @@
 # coding: utf-8
-"""Accelerating Program Analyzers by Unleashing of Power of Compiler Optimizations
-(Can run in parallel)
-
+"""
+Black optimization of LLVM bitcode for accelerating pointer analysis
+- Genetic algorithm (mlopt.ga)
+- Random and parallel search
 """
 
 import logging
@@ -12,10 +13,10 @@ import sys
 from multiprocessing.pool import Pool
 from typing import List
 
-from ga.config import opt_bin, m_tool, opt_options
-from ga.gaopt import GA
-from ga.params import Params
-from ga.utils import run_cmd, get_unique_id, is_bc_or_ll_file
+from mlopt.ga import opt_bin, m_tool, opt_options
+from mlopt.ga.gaopt import GA
+from mlopt.ga.params import Params
+from mlopt.ga import run_cmd, get_unique_id, is_bc_or_ll_file
 
 m_logging = logging.getLogger(__name__)
 
@@ -27,9 +28,7 @@ g_iterations = 3
 g_is_parallel = False
 g_default_time = 0
 
-
 # End of configurations
-
 
 def run_opt(in_name: str, out_name: str, extra_args: List) -> str:
     """Run llvm opt (for transforming and optimizing bitcode)"""
@@ -95,7 +94,7 @@ def clear_tmp_files(bc_name: str):
 
 def ga_optimize(bc: str):
     """Run Genetic algorithm to optimize the bitcode
-       Currently, the GA is sequential, but can run different independent GA in parallel
+       Currently, the GA is sequential, but we can run different independent GA in parallel
     """
     # global g_iterations
     minimum_time = g_default_time
@@ -248,8 +247,8 @@ def sequential_optimize(bc: str):
 
     def seq_signal_handler(sig, frame):
         print("We are finish here, have a good day!")
-        os.system("kill -9 wpa") # wpa is an entrance of SVF
-        os.system("kill -9 opt") # opt is from LLVM
+        os.system("kill -9 wpa")  # wpa is an entrance of SVF
+        os.system("kill -9 opt")  # opt is from LLVM
         os.system("rm /tmp/*.bc")
         sys.exit(0)
 

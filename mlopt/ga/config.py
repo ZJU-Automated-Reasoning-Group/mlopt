@@ -6,7 +6,6 @@ m_tool = "~/SVF/Release+Asserts/bin/wpa -ander".split(' ')
 # The LLVM opt for transforming the bitcode
 opt_bin = "~/LLVM/llvm3.6/build/Release+Asserts/bin/opt"
 
-
 # Currently, I only use a subset of the options supported by opt
 # Besides, some of the options might be conflict with each other
 opt_options = [

@@ -2,9 +2,9 @@
 import random
 
 from . import TestCase, main
-from ..config import opt_options
-from ..gaopt import GA
-from ..params import Params
+from mlopt.ga.config import opt_options
+from mlopt.ga.gaopt import GA
+from mlopt.ga.params import Params
 
 
 def tmp_callback(para: Params):

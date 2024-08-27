@@ -2,8 +2,8 @@
 
 from . import TestCase, main
 
-from ..config import opt_options
-from ..params import Params
+from mlopt.ga.config import opt_options
+from mlopt.ga.params import Params
 
 
 class TestParams(TestCase):
