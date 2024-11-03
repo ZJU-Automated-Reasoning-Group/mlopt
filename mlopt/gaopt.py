@@ -1,7 +1,7 @@
 """ Genetic algorithm for optimizing LLVM opt parameters
 """
 import random
-from .params import Params
+from mlopt.utils.params import Params
 
 
 class GA:

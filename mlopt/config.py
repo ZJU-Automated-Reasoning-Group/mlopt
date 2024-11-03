@@ -4,10 +4,13 @@
 m_tool = "~/SVF/Release+Asserts/bin/wpa -ander".split(' ')
 
 # The LLVM opt for transforming the bitcode
+# Currently, we run opt_bin and m_tool independently.
+#  1. We first run opt to transform a bitcode
+#  2. We then run m_tool on the optimized bitcode
 opt_bin = "~/LLVM/llvm3.6/build/Release+Asserts/bin/opt"
 
 # Currently, I only use a subset of the options supported by opt
-# Besides, some of the options might be conflict with each other
+# Besides, some options might be conflict with each other
 opt_options = [
     "dce = false (bool)",  # Dead Code Elimination
     "adce = false (bool)",  # Aggressive DCE
@@ -40,7 +43,3 @@ opt_options = [
     "sccp = false (bool)"  # Sparse Conditional Constant Propagation
 ]
 
-# The bitcode to be transformed
-programs = "164.gzip.bc,175.vpr.bc,252.eon.bc,300.twolf.bc\
-,186.crafty.bc,181.mcf.bc,197.parser.bc,254.gap.bc,256.bzip2.bc".split(',')
-#  255.vortex.bc,

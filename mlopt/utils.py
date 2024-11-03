@@ -1,50 +1,38 @@
-# coding: utf-8
 import os
 import os.path
 import resource
 import subprocess
 import time
-# import logging
 import uuid
 from threading import Timer
 from typing import List
 
 
-def get_unique_id():
-    """Get a unique ID"""
+def get_unique_id() -> int:
+    """Get a unique ID."""
     return uuid.uuid4().int
 
+def is_bc_or_ll_file(name: str) -> bool:
+    """Check whether the file is an LLVM IR file."""
+    return os.path.splitext(name)[1] in {'.bc', '.ll'}
 
-def is_bc_or_ll_file(name):
-    """Decide whether name is LLVM IR"""
-    ext = os.path.splitext(name)[1]
-    return ext == '.bc' or ext == '.ll'
-
-
-def limit_memory(maxsize, hardmax=resource.RLIM_INFINITY):
-    # soft, hard = resource.getrlimit(resource.RLIMIT_AS)
+def limit_memory(maxsize: int, hardmax: int = resource.RLIM_INFINITY) -> None:
+    """Limit the memory usage for the process."""
     resource.setrlimit(resource.RLIMIT_AS, (maxsize, hardmax))
 
-
-def terminate(process, is_timeout):
-    """
-    Callback for timeout:
-       terminate the process and set is_timeout[0] to True
-    """
+def terminate(process: subprocess.Popen, is_timeout: List[bool]) -> None:
+    """Terminate the process on timeout."""
     if process.poll() is None:
         try:
             process.terminate()
             is_timeout[0] = True
         except Exception as e:
-            print("error for interrupting")
-            print(e)
+            print("Error interrupting process:", e)
 
 
-def isexec(fpath):
-    """Decide whether fpath is exec or not"""
-    if fpath is None:
-        return False
-    return os.path.isfile(fpath) and os.access(fpath, os.X_OK)
+def isexec(fpath: Union[str, None]) -> bool:
+    """Check if the file path is an executable."""
+    return fpath is not None and os.path.isfile(fpath) and os.access(fpath, os.X_OK)
 
 
 def run_cmd(cmd_tool: List, timeout=300):
@@ -57,16 +45,17 @@ def run_cmd(cmd_tool: List, timeout=300):
         is_timeout = [False]
         timer = Timer(timeout, terminate, args=[ptool, is_timeout])
         timer.start()
+
         out_tool = ptool.stdout.readlines()
         out_tool = ' '.join([str(element.decode('UTF-8')) for element in out_tool])
         ptool.stdout.close()
+
         timer.cancel()
         return time.time() - time_start
     except Exception as ex:
-        print(ex)
-        print(out_tool)
-        # return out_tool?
+        print("Exception occurred:", ex)
         return -1
+    
 
 
 def which(program):
