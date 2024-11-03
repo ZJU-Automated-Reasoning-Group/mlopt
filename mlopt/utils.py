@@ -5,20 +5,23 @@ import subprocess
 import time
 import uuid
 from threading import Timer
-from typing import List
+from typing import List, Union
 
 
 def get_unique_id() -> int:
     """Get a unique ID."""
     return uuid.uuid4().int
 
+
 def is_bc_or_ll_file(name: str) -> bool:
     """Check whether the file is an LLVM IR file."""
     return os.path.splitext(name)[1] in {'.bc', '.ll'}
 
+
 def limit_memory(maxsize: int, hardmax: int = resource.RLIM_INFINITY) -> None:
     """Limit the memory usage for the process."""
     resource.setrlimit(resource.RLIMIT_AS, (maxsize, hardmax))
+
 
 def terminate(process: subprocess.Popen, is_timeout: List[bool]) -> None:
     """Terminate the process on timeout."""
@@ -55,14 +58,11 @@ def run_cmd(cmd_tool: List, timeout=300):
     except Exception as ex:
         print("Exception occurred:", ex)
         return -1
-    
 
 
-def which(program):
-    if isinstance(program, str):
-        choices = [program]
-    else:
-        choices = program
+def which(program: Union[str, List[str]]) -> Union[str, None]:
+    """Locate a program file on the system path."""
+    choices = [program] if isinstance(program, str) else program
 
     for p in choices:
         fpath, _ = os.path.split(p)

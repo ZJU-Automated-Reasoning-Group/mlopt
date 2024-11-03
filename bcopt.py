@@ -8,15 +8,13 @@ Black optimization of LLVM bitcode for accelerating pointer analysis
 import logging
 import os
 import signal
-# import random
 import sys
 from multiprocessing.pool import Pool
 from typing import List
-
-from mlopt.ga import opt_bin, m_tool, opt_options
-from mlopt.ga.gaopt import GA
-from mlopt.ga.params import Params
-from mlopt.ga import run_cmd, get_unique_id, is_bc_or_ll_file
+from mlopt.config import opt_bin, m_tool, opt_options
+from mlopt.params import Params
+from mlopt.utils import run_cmd, get_unique_id, is_bc_or_ll_file
+from mlopt.gaopt import GA
 
 m_logging = logging.getLogger(__name__)
 
@@ -27,8 +25,6 @@ g_analyzer_timeout = 600
 g_iterations = 3
 g_is_parallel = False
 g_default_time = 0
-
-# End of configurations
 
 def run_opt(in_name: str, out_name: str, extra_args: List) -> str:
     """Run llvm opt (for transforming and optimizing bitcode)"""
@@ -49,7 +45,7 @@ def run_opt(in_name: str, out_name: str, extra_args: List) -> str:
 
 
 def run_analyzer(bc: str) -> float:
-    """Run the program analyzer (e.g., SVF)"""
+    """Run the program analyzer"""
     # global g_analyzer_timeout
     try:
         cmd_tool = [i for i in m_tool]
@@ -94,7 +90,7 @@ def clear_tmp_files(bc_name: str):
 
 def ga_optimize(bc: str):
     """Run Genetic algorithm to optimize the bitcode
-       Currently, the GA is sequential, but we can run different independent GA in parallel
+       Currently, the GA is sequential, but we may run different independent GA in parallel
     """
     # global g_iterations
     minimum_time = g_default_time
@@ -135,6 +131,7 @@ def random_optimize(bc: str):
     minimum_time = g_default_time
     minimum_opt = "init"
     for _ in range(g_iterations):
+        # create a tmp name for bitcode?
         new_bc_name = def_opt_name(bc, "/tmp/")
         try:
             # randomly generate options
@@ -143,9 +140,13 @@ def random_optimize(bc: str):
             para.mutate()
             extra_args = para.to_llvm_opt_args()
 
+            # Run opt to obtain a new bitcode
             opt_cmd_name = run_opt(bc, new_bc_name, extra_args)
             if os.path.isfile(new_bc_name) and not (opt_cmd_name == "opt error" or opt_cmd_name == "opt timeout"):
                 logging.debug("finish generating new bc")
+                # FIXME: currently, we only record the time for running the analyzer as the goal
+                #  However, the time for running the opt can also be long (We should also add the time
+                #  for generating the bitcode as the overall goal for the optimization
                 time_new_bc = run_analyzer(new_bc_name)
                 logging.debug("finish analyzing new bc")
                 logging.debug("------------------------")
@@ -193,7 +194,6 @@ def signal_handler(sig, frame):
 
 
 def parallel_optimize(bc: str, m_num_process=10):
-    # TODO: is this correct?
     global g_pool
 
     # Process the initial bitcode

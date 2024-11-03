@@ -4,8 +4,8 @@ This is a script for testing (showing the use of our APIs to run a set of bitcod
 """
 import logging
 
-from mlopt.ga import m_tool
-from mlopt.ga import run_cmd, is_bc_or_ll_file
+from mlopt.config import m_tool
+from mlopt.utils import run_cmd, is_bc_or_ll_file
 
 g_analyzer_timeout = 43200  # 12 hours
 
