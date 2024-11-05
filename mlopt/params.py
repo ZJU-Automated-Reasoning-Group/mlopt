@@ -1,5 +1,5 @@
 """
-Manging configurations of LLVM opt
+Manging configurations
 """
 import random
 import re
@@ -40,7 +40,7 @@ def mutate_param(param: Param, rand) -> Param:
 
 
 class Params:
-    """A group of parameters for LLVM opt configurations."""
+    """A group of parameters for configurations."""
     _rex = re.compile(r"(.*)\s=\s(.*)\s(\(.*\))")
     _mutate_probability = 0.5
     _rand = random.Random()
@@ -90,8 +90,8 @@ class Params:
         res._storage.update(list(p2._storage.items())[crossover_point:])
         return res
 
-    def to_llvm_opt_args(self):
-        """Convert parameters to LLVM opt command-line arguments."""
+    def to_cmd_args(self) -> str:
+        """Convert parameters to command-line arguments."""
         ret = []
         for param in self._storage.values():
             # print(param.ttype)

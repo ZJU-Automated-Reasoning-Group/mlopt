@@ -1,6 +1,5 @@
 # coding: utf-8
 import random
-
 from . import TestCase, main
 from mlopt.config import opt_options
 from mlopt.gaopt import GA

@@ -3,19 +3,9 @@ import os.path
 import resource
 import subprocess
 import time
-import uuid
+# import uuid
 from threading import Timer
 from typing import List, Union
-
-
-def get_unique_id() -> int:
-    """Get a unique ID."""
-    return uuid.uuid4().int
-
-
-def is_bc_or_ll_file(name: str) -> bool:
-    """Check whether the file is an LLVM IR file."""
-    return os.path.splitext(name)[1] in {'.bc', '.ll'}
 
 
 def limit_memory(maxsize: int, hardmax: int = resource.RLIM_INFINITY) -> None:

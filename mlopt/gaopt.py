@@ -1,4 +1,4 @@
-""" Genetic algorithm for optimizing LLVM opt parameters
+""" Genetic algorithm for tuning parameters
 """
 import random
 from mlopt.params import Params
@@ -34,7 +34,7 @@ class GA:
             # print("Fitness: {0}\n".format(param.fitness))
             # param.print()
             min_time = param.fitness
-            min_opt = " ".join(param.to_llvm_opt_args())
+            min_opt = " ".join(param.to_cmd_args())
             break
         return min_time, min_opt
 
