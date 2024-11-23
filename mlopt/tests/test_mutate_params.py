@@ -1,6 +1,6 @@
 # coding: utf-8
 from . import TestCase, main
-from mlopt.config import opt_options
+from mlopt.resources.llvm_config import llvm_opt_options
 from mlopt.params import Params
 
 
@@ -8,7 +8,7 @@ class TestParams(TestCase):
 
     def test_mutate(self):
         para = Params()
-        para.load(opt_options)
+        para.load(llvm_opt_options)
 
         for key, param in para._storage.items():
             if "(bool)" == param.ttype:

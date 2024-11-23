@@ -1,7 +1,7 @@
 # coding: utf-8
 import random
 from . import TestCase, main
-from mlopt.config import opt_options
+from mlopt.resources.llvm_config import llvm_opt_options
 from mlopt.gaopt import GA
 from mlopt.params import Params
 
@@ -23,7 +23,7 @@ class TestGA(TestCase):
 
     def test_ga(self):
         try:
-            ga = GA(opt_options)
+            ga = GA(llvm_opt_options)
             for i in range(120):
                 ga.evaluate(callback=tmp_callback)
                 ga.repopulate()

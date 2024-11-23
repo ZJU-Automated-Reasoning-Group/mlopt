@@ -8,10 +8,11 @@ import os
 import signal
 import sys
 from multiprocessing.pool import Pool
-from mlopt.config import  m_tool, opt_options
+from mlopt.resources.llvm_config import llvm_opt_options
+from typing import List
 from mlopt.params import Params
 from mlopt.utils import run_cmd
-from mlopt.gaopt import GA
+from mlopt.ga_opt import GA
 
 m_logging = logging.getLogger(__name__)
 
@@ -24,7 +25,8 @@ g_is_parallel = False
 g_default_time = 0
 g_input_file = None
 
-def run_target_tool(input_file: str, cmd_args=" ") -> float:
+
+def run_target_tool(m_tool: List, input_file: str, cmd_args=" ") -> float:
     """Run the target_tool"""
     try:
         cmd_tool = [i for i in m_tool]
@@ -65,7 +67,7 @@ def ga_optimize(file_name: str):
             return 4294967295.0
 
     try:
-        ga = GA(opt_options)
+        ga = GA(llvm_opt_options)
         for i in range(g_iterations):
             ga.evaluate(callback=_ga_callback)
             ga.repopulate()
@@ -86,7 +88,7 @@ def random_optimize(file_name: str):
         try:
             # randomly generate options
             para = Params()
-            para.load(opt_options)
+            para.load(llvm_opt_options)
             para.mutate()
             cmd_args = para.to_cmd_args()
 
@@ -117,8 +119,10 @@ def optimize(file_name: str):
         return random_optimize(file_name)
     # signal.alarm(signal.SIGTERM)
 
+
 # this is the global Pool (workers)
 g_pool = None
+
 
 def signal_handler(sig, frame):
     global g_pool
