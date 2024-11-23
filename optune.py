@@ -24,12 +24,13 @@ g_iterations = 3
 g_is_parallel = False
 g_default_time = 0
 g_input_file = None
+g_tool = None
 
 
-def run_target_tool(m_tool: List, input_file: str, cmd_args=" ") -> float:
+def run_target_tool(input_file: str, cmd_args=" ") -> float:
     """Run the target_tool"""
     try:
-        cmd_tool = [i for i in m_tool]
+        cmd_tool = [i for i in g_tool]
         cmd_tool.append(cmd_args)
         cmd_tool.append(input_file)
         logging.debug(cmd_tool)
@@ -208,6 +209,7 @@ if __name__ == "__main__":
     parser.add_argument('--iterations', dest='iterations', default=6, type=int,
                         help="number of iterations for the opt")
     parser.add_argument('--strategy', dest='strategy', default='random', type=str)
+    parser.add_argument('--tool', dest='tool', default='z3', type=str)
     parser.add_argument("-v", "--verbose", help="increase output verbosity",
                         action="store_true")
 
@@ -226,6 +228,7 @@ if __name__ == "__main__":
     g_opt_timeout = args.opt_timeout
     g_target_tool_timeout = args.target_tool_timeout
     g_iterations = args.iterations
+    g_tool = args.tool.split(' ')
 
     if args.workers > 1:
         g_is_parallel = True
